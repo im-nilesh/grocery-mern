@@ -5,7 +5,7 @@ import { dummyProducts } from "../assets/assets";
 import { toast } from "react-hot-toast";
 
 export const AppContextProvider = ({ children }) => {
-  const currency = "₹";
+  const currency = import.meta.env.VITE_CURRENCY;
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [isSeller, setIsSeller] = useState(false);
