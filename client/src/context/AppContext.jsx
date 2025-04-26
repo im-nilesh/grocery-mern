@@ -29,6 +29,25 @@ export const AppContextProvider = ({ children }) => {
     toast.success("Added to cart");
   };
 
+  const updateCartItem = (itemId, quantity) => {
+    let cartData = structuredClone(cartItems);
+    cartData[itemId] = quantity;
+    setcartItems(cartData);
+    toast.success("Cart updated");
+  };
+
+  const removeFromCart = (itemId) => {
+    let cartData = structuredClone(cartItems);
+    if (cartData[itemId]) {
+      cartData[itemId] -= 1;
+      if (cartData[itemId] === 0) {
+        delete cartData[itemId];
+      }
+    }
+    toast.success("Removed from cart");
+    setcartItems(cartData);
+  };
+
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -44,6 +63,8 @@ export const AppContextProvider = ({ children }) => {
     products,
     currency,
     addToCart,
+    updateCartItem,
+    removeFromCart,
   };
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
