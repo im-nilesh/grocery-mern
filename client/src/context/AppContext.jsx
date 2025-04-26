@@ -17,7 +17,7 @@ export const AppContextProvider = ({ children }) => {
     setProducts(dummyProducts);
   };
 
-  const addToCart = () => {
+  const addToCart = (itemId) => {
     let cartData = structuredClone(cartItems);
 
     if (cartData[itemId]) {
@@ -65,6 +65,7 @@ export const AppContextProvider = ({ children }) => {
     addToCart,
     updateCartItem,
     removeFromCart,
+    cartItems,
   };
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
