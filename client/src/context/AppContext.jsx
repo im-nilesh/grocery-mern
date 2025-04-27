@@ -1,8 +1,9 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-export const AppContext = createContext();
 import { dummyProducts } from "../assets/assets";
 import { toast } from "react-hot-toast";
+
+export const AppContext = createContext();
 
 export const AppContextProvider = ({ children }) => {
   const currency = import.meta.env.VITE_CURRENCY;
@@ -11,8 +12,8 @@ export const AppContextProvider = ({ children }) => {
   const [isSeller, setIsSeller] = useState(false);
   const [showUserLogin, setShowUserLogin] = useState(false);
   const [products, setProducts] = useState([]);
-  const [cartItems, setcartItems] = useState({});
-  const [searchQuery, setsearchQuery] = useState({});
+  const [cartItems, setCartItems] = useState({});
+  const [searchQuery, setSearchQuery] = useState("");
 
   const fetchProducts = async () => {
     setProducts(dummyProducts);
@@ -26,14 +27,14 @@ export const AppContextProvider = ({ children }) => {
     } else {
       cartData[itemId] = 1;
     }
-    setcartItems(cartData);
+    setCartItems(cartData);
     toast.success("Added to cart");
   };
 
   const updateCartItem = (itemId, quantity) => {
     let cartData = structuredClone(cartItems);
     cartData[itemId] = quantity;
-    setcartItems(cartData);
+    setCartItems(cartData);
     toast.success("Cart updated");
   };
 
@@ -46,7 +47,7 @@ export const AppContextProvider = ({ children }) => {
       }
     }
     toast.success("Removed from cart");
-    setcartItems(cartData);
+    setCartItems(cartData);
   };
 
   useEffect(() => {
@@ -67,9 +68,10 @@ export const AppContextProvider = ({ children }) => {
     updateCartItem,
     removeFromCart,
     cartItems,
-    setsearchQuery,
     searchQuery,
+    setSearchQuery,
   };
+
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
 
