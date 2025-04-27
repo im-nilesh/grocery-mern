@@ -28,12 +28,14 @@ const BottomBanner = () => {
                 alt="feature_icon"
                 className="md:w-11 w-9"
               />
-              <h3 className="text-ig md:text-xl font-semibold">
-                {feature.title}
-              </h3>
-              <p className="text-gray-500/70 text-xs md:tex-sm">
-                {feature.description}
-              </p>
+              <div>
+                <h3 className="text-ig md:text-xl font-semibold">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-500/70 text-xs md:tex-sm">
+                  {feature.description}
+                </p>
+              </div>
             </div>
           ))}
         </div>
