@@ -32,6 +32,11 @@ export const AppContextProvider = ({ children }) => {
   };
 
   const updateCartItem = (itemId, quantity) => {
+    if (quantity <= 0) {
+      toast.error("Quantity must be greater than zero.");
+      return;
+    }
+
     let cartData = structuredClone(cartItems);
     cartData[itemId] = quantity;
     setCartItems(cartData);
@@ -62,11 +67,17 @@ export const AppContextProvider = ({ children }) => {
     let totalAmount = 0;
     for (const items in cartItems) {
       let iteminfo = products.find((product) => product._id === items);
-      if (cartItems[items] > 0) {
-        totalAmount += iteminfo.offerprice * cartItems[items];
+
+      // Check if product is found
+      if (iteminfo && iteminfo.offerPrice) {
+        totalAmount += iteminfo.offerPrice * cartItems[items];
+      } else {
+        console.warn(
+          `Product with id ${items} not found or missing offerPrice`
+        );
       }
     }
-    return Math.floor(totalAmount * 100) / 100;
+    return Math.floor(totalAmount * 100) / 100; // rounding to 2 decimal places
   };
 
   useEffect(() => {
