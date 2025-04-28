@@ -35,7 +35,7 @@ const ProductDetails = () => {
           <Link to={"/products"}> {product.category}</Link> /
           <Link
             to={`/products/${product.category.toLowerCase()}`}
-            className="text-indigo-500"
+            className="text-primary"
           >
             {" "}
             {product.name}
@@ -109,7 +109,7 @@ const ProductDetails = () => {
                   addToCart(product.id);
                   navigate("/cart");
                 }}
-                className="w-full py-3.5 cursor-pointer font-medium bg-indigo-500 text-white hover:bg-indigo-600 transition"
+                className="w-full py-3.5 cursor-pointer font-medium bg-primary text-white hover:bg-primary-dull transition"
               >
                 Buy now
               </button>
