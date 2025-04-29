@@ -2,7 +2,7 @@ import { Link, NavLink, Outlet } from "react-router-dom";
 import { assets } from "../../assets/assets";
 import { useAppContext } from "../../context/AppContext";
 
-const SellerLayput = () => {
+const SellerLayout = () => {
   const { setIsSeller } = useAppContext();
 
   const sidebarLinks = [
@@ -46,7 +46,7 @@ const SellerLayput = () => {
               to={item.path}
               key={item.name}
               end={item.path === "/seller"}
-              class={({ isActive }) => `flex items-center py-3 px-4 gap-3 
+              className={({ isActive }) => `flex items-center py-3 px-4 gap-3 
                             ${
                               isActive
                                 ? "border-r-4 md:border-r-[6px] bg-primary/10 border-primary text-primary"
@@ -64,4 +64,4 @@ const SellerLayput = () => {
   );
 };
 
-export default SellerLayput;
+export default SellerLayout;
