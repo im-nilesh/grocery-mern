@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useAppContext } from "../../context/AppContext";
 
-const sellerLogin = () => {
+const SellerLogin = () => {
   const { isSeller, setIsSeller, navigate } = useAppContext();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -55,4 +55,4 @@ const sellerLogin = () => {
   );
 };
 
-export default sellerLogin;
+export default SellerLogin;
