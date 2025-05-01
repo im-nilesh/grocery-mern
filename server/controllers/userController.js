@@ -81,3 +81,15 @@ export const login = async (req, res) => {
     res.json({ success: false, message: error.message });
   }
 };
+
+// Check Auth : /api/user/ is-auth
+export const isAuth = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    const user = await User.findbyId(userId).select("password");
+    return res.json({ success: true, user });
+  } catch (error) {
+    console.error(error.message);
+    res.json({ success: false, message: error.message });
+  }
+};
