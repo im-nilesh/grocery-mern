@@ -2,8 +2,7 @@ import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-//api/user/register
-
+// Register User: POST /api/user/register
 export const register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -13,8 +12,9 @@ export const register = async (req, res) => {
     }
 
     const existingUser = await User.findOne({ email });
-    if (existingUser)
+    if (existingUser) {
       return res.json({ success: false, message: "User Already Exists" });
+    }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -41,9 +41,11 @@ export const register = async (req, res) => {
   }
 };
 
+// Login User: POST /api/user/login
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
+
     if (!email || !password) {
       return res.json({
         success: false,
@@ -82,12 +84,40 @@ export const login = async (req, res) => {
   }
 };
 
-// Check Auth : /api/user/ is-auth
+// Check Auth: GET /api/user/is-auth
 export const isAuth = async (req, res) => {
   try {
-    const { userId } = req.body;
-    const user = await User.findbyId(userId).select("password");
+    const token = req.cookies.token;
+
+    if (!token) {
+      return res.json({ success: false, message: "Not authenticated" });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const user = await User.findById(decoded.id).select("-password");
+
+    if (!user) {
+      return res.json({ success: false, message: "User not found" });
+    }
+
     return res.json({ success: true, user });
+  } catch (error) {
+    console.error(error.message);
+    return res.json({ success: false, message: "Invalid or expired token" });
+  }
+};
+
+// Logout User: GET /api/user/logout
+export const logout = async (req, res) => {
+  try {
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+    });
+
+    return res.json({ success: true, message: "Logged Out" });
   } catch (error) {
     console.error(error.message);
     res.json({ success: false, message: error.message });
