@@ -3,7 +3,7 @@ import express from "express";
 import cors from "cors";
 import connectDB from "./configs/db.js";
 import "dotenv/config";
-import userRouter from "./routes/userRoute.js";
+import userRouter from "./routes/userRoutes.js";
 import sellerRouter from "./routes/sellerRoutes.js";
 import connectCloudinary from "./configs/cloudinary.js";
 import productRouter from "./routes/productRoutes.js";
