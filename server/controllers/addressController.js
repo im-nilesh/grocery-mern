@@ -1,4 +1,4 @@
-import Address from "../models/Address";
+import Address from "../models/Address.js";
 
 //add address : /api/address/add
 
