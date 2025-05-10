@@ -106,7 +106,6 @@ export const AppContextProvider = ({ children }) => {
     for (const items in cartItems) {
       let iteminfo = products.find((product) => product._id === items);
 
-      // Check if product is found
       if (iteminfo && iteminfo.offerPrice) {
         totalAmount += iteminfo.offerPrice * cartItems[items];
       } else {
@@ -115,7 +114,7 @@ export const AppContextProvider = ({ children }) => {
         );
       }
     }
-    return Math.floor(totalAmount * 100) / 100; // rounding to 2 decimal places
+    return Math.floor(totalAmount * 100) / 100;
   };
 
   useEffect(() => {
@@ -123,6 +122,25 @@ export const AppContextProvider = ({ children }) => {
     fetchSeller();
     fetchProducts();
   }, []);
+
+  useEffect(() => {
+    const updateCart = async () => {
+      try {
+        if (!user || Object.keys(cartItems).length === 0) return;
+        const { data } = await axios.post("/api/cart/update", {
+          userId: user._id,
+          cartItems,
+        });
+        if (!data.success) {
+          toast.error(data.message);
+        }
+      } catch (error) {
+        toast.error(error.message);
+      }
+    };
+
+    updateCart();
+  }, [cartItems, user]);
 
   const value = {
     navigate,
