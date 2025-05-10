@@ -12,6 +12,10 @@ import addressRouter from "./routes/addressRoutes.js";
 import orderRouter from "./routes/orderRoutes.js";
 
 const app = express();
+
+// Middleware to parse JSON
+app.use(express.json());
+
 const port = process.env.PORT || 4000;
 
 (async () => {
@@ -20,7 +24,6 @@ const port = process.env.PORT || 4000;
 
   const allowedOrigins = ["http://localhost:5173"];
 
-  app.use(express.json());
   app.use(cookieParser());
   app.use(cors({ origin: allowedOrigins, credentials: true }));
 
