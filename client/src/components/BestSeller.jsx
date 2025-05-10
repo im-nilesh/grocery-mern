@@ -1,9 +1,14 @@
 import React from "react";
 import ProductCard from "./ProductCard";
-import { useAppContext } from "../context/AppContext"; // Assuming you have a context or state management to get products
+import { useAppContext } from "../context/AppContext";
 
 const BestSeller = () => {
-  const { products } = useAppContext(); // Assuming you have a context or state management to get products
+  const { products } = useAppContext();
+
+  if (!Array.isArray(products) || products.length === 0) {
+    return null; // or show a spinner/loading state
+  }
+
   return (
     <div className="mt-16">
       <p className="text-2xl md:text-3xl font-medium">Best Sellers</p>
