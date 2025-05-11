@@ -39,10 +39,10 @@ export const placeOrderCOD = async (req, res) => {
 
 export const getUserOrders = async (req, res) => {
   try {
-    const { userId } = req.body;
+    const userId = req.userId; // Use userId from auth middleware
     const orders = await Order.find({
       userId,
-      $or: [{ payementType: "COD" }, { isPaid: true }],
+      $or: [{ paymentType: "COD" }, { isPaid: true }],
     })
       .populate("items.product address")
       .sort({ createdAt: -1 });
