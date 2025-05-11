@@ -60,7 +60,7 @@ export const getUserOrders = async (req, res) => {
 export const getAllOrders = async (req, res) => {
   try {
     const orders = await Order.find({
-      $or: [{ payementType: "COD" }, { isPaid: true }],
+      $or: [{ paymentType: "COD" }, { isPaid: true }], // Corrected "payementType" to "paymentType"
     })
       .populate("items.product address")
       .sort({ createdAt: -1 });
