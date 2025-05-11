@@ -82,24 +82,31 @@ export const placeOrderStripe = async (req, res) => {
     const { origin } = req.headers;
 
     if (!address || items.length === 0) {
-      return res.json({ success: false, message: "Invalid date" });
+      return res.json({ success: false, message: "Invalid data" });
     }
-    let productData = [];
-    //calc amount using items
 
-    let amount = await items.reduce(async (acc, items) => {
-      const product = await Product.findById(items.product);
+    let productData = [];
+    let amount = await items.reduce(async (acc, item) => {
+      const product = await Product.findById(item.product);
       productData.push({
         name: product.name,
         price: product.offerPrice,
-        quantity: items.quantity,
+        quantity: item.quantity,
       });
-      return (await acc) + product.offerPrice * items.quantity;
+      return (await acc) + product.offerPrice * item.quantity;
     }, 0);
 
-    //add tax charge (2%)
-
+    // Add tax charge (2%)
     amount += Math.floor(amount * 0.02);
+
+    // Check if the amount is at least ₹50 (Stripe's minimum is $0.50)
+    if (amount < 50) {
+      return res.json({
+        success: false,
+        message:
+          "The total amount must be at least ₹50 to proceed with online payment.",
+      });
+    }
 
     const order = await Order.create({
       userId,
@@ -109,7 +116,6 @@ export const placeOrderStripe = async (req, res) => {
       paymentType: "Online",
     });
 
-    //stripe gateway initialization
     const stripeInstance = new stripe(process.env.STRIPE_SECRET_KEY);
 
     const line_items = productData.map((item) => ({
@@ -123,7 +129,6 @@ export const placeOrderStripe = async (req, res) => {
       quantity: item.quantity,
     }));
 
-    //create session
     const session = await stripeInstance.checkout.sessions.create({
       line_items,
       mode: "payment",

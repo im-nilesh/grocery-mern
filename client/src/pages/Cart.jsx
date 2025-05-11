@@ -61,39 +61,27 @@ const Cart = () => {
         return toast.error("Please select an address");
       }
 
-      if (paymentOption === "COD") {
-        const { data } = await axios.post("/api/order/cod", {
-          userId: user._id,
-          items: cartArray.map((item) => ({
-            product: item._id,
-            quantity: item.quantity,
-          })),
-          address: selectedAddress._id,
-        });
+      const endpoint =
+        paymentOption === "COD" ? "/api/order/cod" : "/api/order/stripe";
+      const { data } = await axios.post(endpoint, {
+        userId: user._id,
+        items: cartArray.map((item) => ({
+          product: item._id,
+          quantity: item.quantity,
+        })),
+        address: selectedAddress._id,
+      });
 
-        if (data.success) {
+      if (data.success) {
+        if (paymentOption === "COD") {
           toast.success(data.message);
           setCartItems({});
           navigate("/my-orders");
         } else {
-          toast.error(data.message);
+          window.location.replace(data.url);
         }
       } else {
-        //place order online
-        const { data } = await axios.post("/api/order/stripe", {
-          userId: user._id,
-          items: cartArray.map((item) => ({
-            product: item._id,
-            quantity: item.quantity,
-          })),
-          address: selectedAddress._id,
-        });
-
-        if (data.success) {
-          window.location.replace(data.url);
-        } else {
-          toast.error(data.message);
-        }
+        toast.error(data.message);
       }
     } catch (error) {
       console.error("Error placing order:", error);
