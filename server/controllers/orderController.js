@@ -13,7 +13,7 @@ export const placeOrderCOD = async (req, res) => {
     //calc amount using items
 
     let amount = await items.reduce(async (acc, items) => {
-      const product = await Product.findByID(items.product);
+      const product = await Product.findById(items.product);
       return (await acc) + product.offerPrice * items.quantity;
     }, 0);
 

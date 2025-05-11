@@ -15,6 +15,7 @@ const Cart = () => {
     getCartAmount,
     axios,
     user,
+    setCartItems,
   } = useAppContext();
 
   const [cartArray, setCartArray] = useState([]);
@@ -55,11 +56,33 @@ const Cart = () => {
   };
 
   const placeOrder = async () => {
-    console.log("Placing order...");
-    console.log("Selected Address:", selectedAddress);
-    console.log("Payment Option:", paymentOption);
-    console.log("Cart Items:", cartArray);
-    // TODO: Add order logic here
+    try {
+      if (!selectedAddress) {
+        return toast.error("Please select an address");
+      }
+
+      if (paymentOption === "COD") {
+        const { data } = await axios.post("/api/order/cod", {
+          userId: user._id,
+          items: cartArray.map((item) => ({
+            product: item._id,
+            quantity: item.quantity,
+          })),
+          address: selectedAddress._id,
+        });
+
+        if (data.success) {
+          toast.success(data.message);
+          setCartItems({});
+          navigate("/my-orders");
+        } else {
+          toast.error(data.message);
+        }
+      }
+    } catch (error) {
+      console.error("Error placing order:", error);
+      toast.error("Failed to place order");
+    }
   };
 
   useEffect(() => {
