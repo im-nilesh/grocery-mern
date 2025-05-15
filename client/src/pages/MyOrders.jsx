@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useAppContext } from "../context/AppContext";
-import { dummyOrders } from "../assets/assets";
 
 const MyOrders = () => {
   const [myOrders, setMyOrders] = useState([]);
@@ -37,7 +36,12 @@ const MyOrders = () => {
         >
           <p className="flex justify-between md:items-center text-gray-400 md:font-medium max-md:flex-col">
             <span>OrderId: {order._id}</span>
-            <span>Payment: {order.paymentType}</span>
+            <span>
+              Payment:{" "}
+              {order.paymentType === "Online"
+                ? "Online Payment"
+                : "Cash On Delivery"}
+            </span>
             <span>
               Total Amount: {currency}
               {order.amount}

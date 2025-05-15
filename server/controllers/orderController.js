@@ -88,6 +88,10 @@ export const placeOrderStripe = async (req, res) => {
     let productData = [];
     let amount = await items.reduce(async (acc, item) => {
       const product = await Product.findById(item.product);
+      if (!product) {
+        throw new Error(`Product not found for ID: ${item.product}`);
+      }
+
       productData.push({
         name: product.name,
         price: product.offerPrice,
@@ -151,6 +155,10 @@ export const placeOrderStripe = async (req, res) => {
 export const stripeWebhook = async (req, res) => {
   const stripeInstance = new stripe(process.env.STRIPE_SECRET_KEY);
   const sig = req.headers["stripe-signature"];
+  if (!sig) {
+    console.error("Stripe signature missing");
+    return res.status(400).send("Stripe signature missing");
+  }
   let event;
   try {
     event = stripeInstance.webhooks.constructEvent(
@@ -159,10 +167,12 @@ export const stripeWebhook = async (req, res) => {
       process.env.STRIPE_WEBHOOK_SECRET
     );
   } catch (error) {
-    response.status(400).send(`Webhook Error: ${error.message}`);
+    return res.status(400).send(`Webhook Error: ${error.message}`);
   }
 
-  //event handling
+  console.log("Stripe event type:", event.type); // Log the event type
+
+  // Event handling
   switch (event.type) {
     case "payment_intent.succeeded": {
       const paymentIntent = event.data.object;
@@ -174,9 +184,15 @@ export const stripeWebhook = async (req, res) => {
 
       const { orderId, userId } = session.data[0].metadata;
 
-      //mark order as paid
-      await Order.findByIdAndUpdate(orderId, { isPaid: true });
+      // Mark order as paid and update payment type to "Online"
 
+      const updatedOrder = await Order.findByIdAndUpdate(orderId, {
+        isPaid: true,
+        paymentType: "Online",
+      });
+      console.log("Updated order:", updatedOrder);
+
+      // Clear the user's cart
       await User.findByIdAndUpdate(userId, {
         cartItems: {},
       });
@@ -198,5 +214,5 @@ export const stripeWebhook = async (req, res) => {
       console.error(`Unhandled event type ${event.type}`);
       break;
   }
-  response.json({ received: true });
+  res.json({ received: true });
 };

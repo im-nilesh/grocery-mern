@@ -63,6 +63,7 @@ const Cart = () => {
 
       const endpoint =
         paymentOption === "COD" ? "/api/order/cod" : "/api/order/stripe";
+      console.log("Placing order with endpoint:", endpoint);
       const { data } = await axios.post(endpoint, {
         userId: user._id,
         items: cartArray.map((item) => ({
