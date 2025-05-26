@@ -31,7 +31,7 @@ const port = process.env.PORT || 4000;
   app.post("/stripe", express.raw({ type: "application/json" }), stripeWebhook);
 
   app.use(cookieParser());
-  app.use(cors({ origin: allowedOrigins }));
+  app.use(cors({ origin: allowedOrigins, credentials: true }));
 
   app.get("/", (req, res) => res.send("API is Working"));
   app.use("/api/user", userRouter);
